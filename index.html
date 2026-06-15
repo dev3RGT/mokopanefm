@@ -1,1 +1,796 @@
+HTML
+preview
+copy
+use
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FM • Radio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -2px;
+        }
 
+        .station-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .station-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .station-card.active {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .radio-wave {
+            animation: radio-wave 2s infinite ease-in-out;
+        }
+
+        .player-glow {
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .station-frequency {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .modern-shadow {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+                        0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .audio-visualizer {
+            height: 60px;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .bar {
+            width: 5px;
+            background: linear-gradient(to top, #6366f1, #a5b4fc);
+            border-radius: 9999px;
+            transition: height 0.1s ease;
+        }
+
+        .nav-active {
+            color: white;
+            background-color: #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <div class="flex items-center gap-x-3">
+                    <!-- Logo -->
+                    <div class="flex items-center gap-x-2">
+                        <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-broadcast-tower text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="logo-font text-3xl font-semibold tracking-tighter">FM</span>
+                            <span class="text-zinc-400 text-xl font-medium">Radio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-4 top-3.5 text-zinc-400"></i>
+                        <input 
+                            id="search-input"
+                            type="text" 
+                            placeholder="Search stations or genres..." 
+                            class="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-700 transition-colors text-white pl-11 py-3 rounded-3xl outline-none text-sm"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-x-4">
+                    <!-- User -->
+                    <div class="flex items-center gap-x-3">
+                        <div class="text-right">
+                            <div class="text-sm font-medium">Alex Rivera</div>
+                            <div class="text-xs text-zinc-500">Premium</div>
+                        </div>
+                        <img src="https://i.pravatar.cc/36?img=47" class="w-9 h-9 rounded-2xl border border-zinc-800" alt="User avatar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-screen-2xl mx-auto px-8 pt-8">
+        
+        <!-- Header -->
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <h1 class="text-5xl font-semibold tracking-tighter">Live Radio</h1>
+                <p class="text-zinc-400 mt-1">Discover and listen to stations from around the world</p>
+            </div>
+            
+            <div class="flex items-center gap-x-3">
+                <button onclick="playRandomStation()" 
+                        class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-3xl text-sm font-medium transition-colors">
+                    <i class="fa-solid fa-random mr-2"></i>
+                    <span>Random Station</span>
+                </button>
+                
+                <button onclick="stopRadio()" 
+                        class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-3xl text-sm font-medium transition-colors">
+                    <i class="fa-solid fa-stop mr-2"></i>
+                    <span>Stop</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Now Playing / Main Player -->
+        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-8 modern-shadow">
+            <div class="flex flex-col lg:flex-row gap-8">
+                
+                <!-- Player Info -->
+                <div class="flex-1">
+                    <div class="flex items-center gap-x-3 mb-4">
+                        <div class="px-3 py-1 bg-zinc-800 rounded-2xl text-xs font-medium flex items-center gap-x-2">
+                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                            <span class="text-emerald-400">LIVE</span>
+                        </div>
+                        <span id="player-genre" class="text-sm text-zinc-400">—</span>
+                    </div>
+                    
+                    <div id="player-station-name" 
+                         class="text-4xl font-semibold tracking-tighter mb-1">
+                        Select a station
+                    </div>
+                    <div id="player-frequency" 
+                         class="text-2xl font-semibold text-zinc-400 station-frequency">
+                        —
+                    </div>
+                    
+                    <div id="player-location" class="text-sm text-zinc-500 mt-2 flex items-center gap-x-2">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>—</span>
+                    </div>
+                </div>
+
+                <!-- Audio Visualizer -->
+                <div class="flex-1 flex items-center justify-center">
+                    <div class="w-full max-w-[280px]">
+                        <div class="audio-visualizer" id="visualizer">
+                            <!-- Bars will be created by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex flex-col justify-between min-w-[180px]">
+                    <div class="flex items-center justify-end gap-x-3">
+                        <button onclick="togglePlay()" 
+                                class="w-14 h-14 flex items-center justify-center bg-white text-zinc-900 rounded-2xl hover:bg-zinc-100 transition-all shadow-inner"
+                                id="play-button">
+                            <i class="fa-solid fa-play text-2xl ml-0.5" id="play-icon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Volume -->
+                    <div class="mt-6">
+                        <div class="flex items-center justify-between text-xs mb-1.5 px-1">
+                            <span class="text-zinc-400">Volume</span>
+                            <span id="volume-value" class="text-zinc-300 font-medium">80</span>
+                        </div>
+                        <div class="flex items-center gap-x-3">
+                            <i class="fa-solid fa-volume-low text-zinc-500"></i>
+                            <input type="range" 
+                                   id="volume-slider"
+                                   min="0" max="100" value="80"
+                                   class="w-full accent-indigo-500 cursor-pointer">
+                            <i class="fa-solid fa-volume-high text-zinc-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-semibold">Stations</h2>
+                <div class="text-sm text-zinc-400" id="station-count">24 stations</div>
+            </div>
+            
+            <!-- Genre Filters -->
+            <div class="flex flex-wrap gap-2" id="genre-filters">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stations Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" id="stations-grid">
+            <!-- Stations populated by JavaScript -->
+        </div>
+        
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audio-player" class="hidden"></audio>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+
+        // Radio Stations Data
+        const stations = [
+            {
+                id: 1,
+                name: "Groove Salad",
+                frequency: "101.5",
+                genre: "Ambient",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/groovesalad-320-mp3",
+                color: "#6366f1"
+            },
+            {
+                id: 2,
+                name: "Secret Agent",
+                frequency: "89.3",
+                genre: "Lounge",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/secretagent-320-mp3",
+                color: "#8b5cf6"
+            },
+            {
+                id: 3,
+                name: "Indie Pop Rocks",
+                frequency: "94.7",
+                genre: "Indie",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/indiepop-320-mp3",
+                color: "#ec4899"
+            },
+            {
+                id: 4,
+                name: "Lush",
+                frequency: "105.2",
+                genre: "Ambient",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/lush-320-mp3",
+                color: "#14b8a6"
+            },
+            {
+                id: 5,
+                name: "DEF CON Radio",
+                frequency: "88.1",
+                genre: "Electronic",
+                location: "Las Vegas",
+                stream: "https://ice1.somafm.com/defcon-320-mp3",
+                color: "#f43f5e"
+            },
+            {
+                id: 6,
+                name: "Space Station Soma",
+                frequency: "98.6",
+                genre: "Ambient",
+                location: "International Space Station",
+                stream: "https://ice1.somafm.com/spacestation-320-mp3",
+                color: "#3b82f6"
+            },
+            {
+                id: 7,
+                name: "Boot Liquor",
+                frequency: "92.4",
+                genre: "Country",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/bootliquor-320-mp3",
+                color: "#f59e0b"
+            },
+            {
+                id: 8,
+                name: "Deep Space One",
+                frequency: "78.9",
+                genre: "Ambient",
+                location: "San Francisco",
+                stream: "https://ice1.somafm.com/deepspaceone-320-mp3",
+                color: "#6366f1"
+            },
+            {
+                id: 9,
+                name: "NTS Radio",
+                frequency: "102.7",
+                genre: "Electronic",
+                location: "London",
+                stream: "https://stream-relay-geo.ntslive.net/stream",
+                color: "#a855f7"
+            },
+            {
+                id: 10,
+                name: "Chillhop Music",
+                frequency: "96.3",
+                genre: "Lo-fi",
+                location: "Amsterdam",
+                stream: "https://stream-44.zeno.fm/0r0xa792kwzuv",
+                color: "#22c55e"
+            },
+            {
+                id: 11,
+                name: "KEXP",
+                frequency: "90.3",
+                genre: "Alternative",
+                location: "Seattle",
+                stream: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3",
+                color: "#eab308"
+            },
+            {
+                id: 12,
+                name: "Jazz24",
+                frequency: "88.5",
+                genre: "Jazz",
+                location: "Seattle",
+                stream: "https://live.amperwave.net/direct/ppm-jazz24mp3-ibc1",
+                color: "#64748b"
+            }
+        ];
+
+        let currentStation = null;
+        let isPlaying = false;
+        let audio = null;
+        let audioContext = null;
+        let analyser = null;
+        let animationFrame = null;
+
+        // Initialize Audio
+        function initAudio() {
+            audio = document.getElementById('audio-player');
+            
+            // Volume control
+            const volumeSlider = document.getElementById('volume-slider');
+            const volumeValue = document.getElementById('volume-value');
+            
+            volumeSlider.addEventListener('input', () => {
+                audio.volume = volumeSlider.value / 100;
+                volumeValue.textContent = volumeSlider.value;
+            });
+
+            // Audio event listeners
+            audio.addEventListener('playing', () => {
+                isPlaying = true;
+                updatePlayButton();
+                startVisualizer();
+            });
+
+            audio.addEventListener('pause', () => {
+                isPlaying = false;
+                updatePlayButton();
+                stopVisualizer();
+            });
+
+            audio.addEventListener('ended', () => {
+                isPlaying = false;
+                updatePlayButton();
+                stopVisualizer();
+            });
+
+            audio.addEventListener('error', (e) => {
+                console.error("Audio error:", e);
+                alert("Unable to play this station. The stream might be temporarily unavailable.");
+                stopRadio();
+            });
+        }
+
+        // Render Stations Grid
+        function renderStations(filteredStations = stations) {
+            const grid = document.getElementById('stations-grid');
+            grid.innerHTML = '';
+
+            filteredStations.forEach(station => {
+                const isActive = currentStation && currentStation.id === station.id;
+                
+                const cardHTML = `
+                    <div onclick="playStation(${station.id})" 
+                         class="station-card bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-3xl p-5 cursor-pointer ${isActive ? 'active border-indigo-500' : ''}">
+                        
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-x-3">
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center" 
+                                     style="background-color: ${station.color}20; color: ${station.color}">
+                                    <i class="fa-solid fa-broadcast-tower text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-lg leading-none">${station.name}</div>
+                                    <div class="text-sm text-zinc-400 station-frequency mt-1">${station.frequency} FM</div>
+                                </div>
+                            </div>
+                            
+                            ${isActive ? `
+                                <div class="flex items-center">
+                                    <div class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-2xl flex items-center gap-x-1">
+                                        <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                                        <span class="text-[10px]">LIVE</span>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="inline-block px-3 py-1 text-xs font-medium rounded-2xl bg-zinc-800 text-zinc-300">
+                                    ${station.genre}
+                                </span>
+                            </div>
+                            <div class="text-xs text-zinc-500">
+                                ${station.location}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.innerHTML += cardHTML;
+            });
+        }
+
+        // Render Genre Filters
+        function renderGenreFilters() {
+            const container = document.getElementById('genre-filters');
+            const genres = [...new Set(stations.map(s => s.genre))];
+            
+            container.innerHTML = `
+                <button onclick="filterByGenre('all')" 
+                        class="px-4 py-1.5 text-sm rounded-3xl bg-indigo-600 hover:bg-indigo-500 transition-colors font-medium">
+                    All
+                </button>
+            `;
+            
+            genres.forEach(genre => {
+                const button = document.createElement('button');
+                button.className = `px-4 py-1.5 text-sm rounded-3xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 transition-colors font-medium`;
+                button.textContent = genre;
+                button.onclick = () => filterByGenre(genre);
+                container.appendChild(button);
+            });
+        }
+
+        // Filter stations by genre
+        function filterByGenre(genre) {
+            const grid = document.getElementById('stations-grid');
+            let filtered = stations;
+            
+            if (genre !== 'all') {
+                filtered = stations.filter(station => station.genre === genre);
+            }
+            
+            // Apply search filter if there's text
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(station => 
+                    station.name.toLowerCase().includes(searchTerm) ||
+                    station.genre.toLowerCase().includes(searchTerm) ||
+                    station.location.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderStations(filtered);
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            
+            searchInput.addEventListener('input', () => {
+                const term = searchInput.value.toLowerCase().trim();
+                
+                let filtered = stations;
+                
+                if (term) {
+                    filtered = stations.filter(station => 
+                        station.name.toLowerCase().includes(term) ||
+                        station.genre.toLowerCase().includes(term) ||
+                        station.location.toLowerCase().includes(term)
+                    );
+                }
+                
+                renderStations(filtered);
+            });
+        }
+
+        // Play a station
+        function playStation(stationId) {
+            const station = stations.find(s => s.id === stationId);
+            if (!station) return;
+
+            // Stop current audio if playing
+            if (audio && !audio.paused) {
+                audio.pause();
+            }
+
+            currentStation = station;
+
+            // Update main player UI
+            document.getElementById('player-station-name').textContent = station.name;
+            document.getElementById('player-frequency').textContent = `${station.frequency} FM`;
+            document.getElementById('player-genre').textContent = station.genre;
+            document.getElementById('player-location').innerHTML = `
+                <i class="fa-solid fa-globe mr-1.5"></i>
+                <span>${station.location}</span>
+            `;
+
+            // Set audio source
+            audio.src = station.stream;
+            audio.volume = document.getElementById('volume-slider').value / 100;
+
+            // Try to play
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    updatePlayButton();
+                    updateActiveStation();
+                }).catch(error => {
+                    console.error("Playback failed:", error);
+                    alert("Playback failed. This might be due to browser restrictions or stream issues.");
+                    isPlaying = false;
+                    updatePlayButton();
+                });
+            }
+
+            updateActiveStation();
+        }
+
+        // Update active station in grid
+        function updateActiveStation() {
+            const cards = document.querySelectorAll('.station-card');
+            
+            cards.forEach(card => {
+                card.classList.remove('active', 'border-indigo-500');
+                card.classList.add('border-zinc-800');
+                
+                // Check if this card is the current station
+                const stationName = card.querySelector('.font-semibold').textContent;
+                if (currentStation && stationName === currentStation.name) {
+                    card.classList.add('active', 'border-indigo-500');
+                    card.classList.remove('border-zinc-800');
+                }
+            });
+        }
+
+        // Toggle play/pause
+        function togglePlay() {
+            if (!currentStation) {
+                // Play first station if none selected
+                playStation(stations[0].id);
+                return;
+            }
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    updatePlayButton();
+                }).catch(err => {
+                    console.error(err);
+                });
+            } else {
+                audio.pause();
+                isPlaying = false;
+                updatePlayButton();
+            }
+        }
+
+        // Update play button icon
+        function updatePlayButton() {
+            const playIcon = document.getElementById('play-icon');
+            
+            if (isPlaying) {
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+            } else {
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+            }
+        }
+
+        // Stop radio
+        function stopRadio() {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            isPlaying = false;
+            updatePlayButton();
+            stopVisualizer();
+            
+            // Reset player UI
+            document.getElementById('player-station-name').textContent = "Select a station";
+            document.getElementById('player-frequency').textContent = "—";
+            document.getElementById('player-genre').textContent = "—";
+            document.getElementById('player-location').innerHTML = `<i class="fa-solid fa-globe"></i> <span>—</span>`;
+            
+            // Remove active states
+            document.querySelectorAll('.station-card').forEach(card => {
+                card.classList.remove('active', 'border-indigo-500');
+                card.classList.add('border-zinc-800');
+            });
+            
+            currentStation = null;
+        }
+
+        // Play random station
+        function playRandomStation() {
+            const randomIndex = Math.floor(Math.random() * stations.length);
+            playStation(stations[randomIndex].id);
+        }
+
+        // Audio Visualizer
+        function setupVisualizer() {
+            const visualizerContainer = document.getElementById('visualizer');
+            visualizerContainer.innerHTML = '';
+            
+            // Create 12 bars
+            for (let i = 0; i < 12; i++) {
+                const bar = document.createElement('div');
+                bar.className = `bar w-[5px] bg-indigo-400 rounded-full`;
+                bar.style.height = `${Math.random() * 20 + 8}px`;
+                visualizerContainer.appendChild(bar);
+            }
+        }
+
+        function startVisualizer() {
+            const visualizerContainer = document.getElementById('visualizer');
+            const bars = visualizerContainer.children;
+            
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 64;
+                    
+                    const source = audioContext.createMediaElementSource(audio);
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                } catch (e) {
+                    console.log("Visualizer not supported");
+                    return;
+                }
+            }
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function animate() {
+                if (!isPlaying || !analyser) {
+                    stopVisualizer();
+                    return;
+                }
+                
+                analyser.getByteFrequencyData(dataArray);
+                
+                for (let i = 0; i < bars.length; i++) {
+                    const bar = bars[i];
+                    const index = Math.floor(i * (bufferLength / bars.length));
+                    const value = dataArray[index];
+                    
+                    const height = Math.max(8, (value / 255) * 55);
+                    bar.style.height = `${height}px`;
+                    
+                    // Add some variation
+                    if (Math.random() > 0.8) {
+                        bar.style.opacity = 0.7 + Math.random() * 0.3;
+                    }
+                }
+                
+                animationFrame = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function stopVisualizer() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            const visualizerContainer = document.getElementById('visualizer');
+            const bars = visualizerContainer.children;
+            
+            for (let i = 0; i < bars.length; i++) {
+                bars[i].style.height = `${Math.random() * 20 + 8}px`;
+                bars[i].style.opacity = '1';
+            }
+        }
+
+        // Filter stations
+        function filterStations(term) {
+            const filtered = stations.filter(station => 
+                station.name.toLowerCase().includes(term) ||
+                station.genre.toLowerCase().includes(term) ||
+                station.location.toLowerCase().includes(term)
+            );
+            renderStations(filtered);
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    togglePlay();
+                }
+                
+                if (e.key.toLowerCase() === 'r') {
+                    playRandomStation();
+                }
+                
+                if (e.key === 'Escape') {
+                    stopRadio();
+                }
+            });
+        }
+
+        // Update station count
+        function updateStationCount() {
+            document.getElementById('station-count').textContent = `${stations.length} stations`;
+        }
+
+        // Initialize everything
+        function initializeRadio() {
+            initializeTailwind();
+            
+            // Initialize audio
+            initAudio();
+            
+            // Render UI
+            renderStations();
+            renderGenreFilters();
+            setupSearch();
+            setupVisualizer();
+            setupKeyboardShortcuts();
+            updateStationCount();
+            
+            // Set initial volume
+            document.getElementById('volume-value').textContent = '80';
+            
+            // Auto-select first station (but don't autoplay due to browser policies)
+            // We can highlight it instead
+            setTimeout(() => {
+                const firstCard = document.querySelector('.station-card');
+                if (firstCard) {
+                    firstCard.style.transition = 'all 0.3s ease';
+                }
+            }, 500);
+
+            // Bonus: Show a welcome toast
+            console.log('%c[FM Radio] Website initialized successfully', 'color: #64748b');
+        }
+
+        // Start the application
+        window.onload = initializeRadio;
+    </script>
+</body>
+</html>
