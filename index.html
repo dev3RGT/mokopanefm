@@ -449,13 +449,6 @@
       padding: 0 48px;
     }
 
-    .shows-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 56px;
-    }
-
     .show-card {
       background: var(--dark3);
       border: 1px solid rgba(255,255,255,0.06);
@@ -539,6 +532,141 @@
       font-size: 13px;
       font-weight: 600;
       color: rgba(255,255,255,0.7);
+    }
+
+    /* ═══════════════════════════════════════
+       SHOWS — INFINITE SCROLL TRACK
+    ═══════════════════════════════════════ */
+    .shows-scroll {
+      width: 100%;
+      overflow: hidden;
+      margin-top: 56px;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+    }
+
+    .shows-track {
+      display: flex;
+      width: max-content;
+      gap: 24px;
+      animation: showsScroll 38s linear infinite;
+    }
+
+    .shows-scroll:hover .shows-track {
+      animation-play-state: paused;
+    }
+
+    .shows-track .show-card {
+      width: 320px;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       PHOTO CAROUSEL
+    ═══════════════════════════════════════ */
+    .carousel-section {
+      background: var(--dark);
+      padding: 96px 0;
+    }
+
+    .carousel-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .carousel {
+      position: relative;
+      margin-top: 56px;
+      border-radius: 22px;
+      overflow: hidden;
+      aspect-ratio: 16 / 7;
+      background: var(--dark2);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+    }
+
+    .carousel-track {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel-slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,10,10,0) 55%, rgba(10,10,10,0.75) 100%);
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(10,10,10,0.55);
+      border: 1px solid rgba(245,168,0,0.3);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 3;
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+    }
+
+    .carousel-arrow:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .carousel-arrow:hover svg path { stroke: var(--black); }
+
+    .carousel-arrow.prev { left: 18px; }
+    .carousel-arrow.next { right: 18px; }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 9px;
+      z-index: 3;
+    }
+
+    .carousel-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.25s, transform 0.25s, width 0.25s;
+    }
+
+    .carousel-dot.active {
+      background: var(--gold);
+      width: 26px;
+      border-radius: 5px;
     }
 
     /* ═══════════════════════════════════════
@@ -971,6 +1099,10 @@
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    @keyframes showsScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     @keyframes eqAnim {
       0%, 100% { transform: scaleY(0.5); }
       50%       { transform: scaleY(1); }
@@ -1013,8 +1145,9 @@
 
       .section { padding: 80px 32px; }
       .about-grid { gap: 48px; }
-      .shows-grid { grid-template-columns: repeat(2, 1fr); }
+      .shows-track .show-card { width: 280px; }
       .shows-inner { padding: 0 32px; }
+      .carousel-wrap { padding: 0 32px; }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
       .contact-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
       .contact-strip { padding: 72px 32px; }
@@ -1101,9 +1234,13 @@
       .section-title { font-size: clamp(36px, 8vw, 56px); }
       .about-grid { grid-template-columns: 1fr; gap: 44px; }
       .about-stats { gap: 18px; }
-      .shows-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .shows-track .show-card { width: 260px; }
       .shows-section { padding: 56px 0; }
       .shows-inner { padding: 0 24px; }
+      .carousel-section { padding: 72px 0; }
+      .carousel-wrap { padding: 0 24px; }
+      .carousel { aspect-ratio: 4 / 3; }
+      .carousel-arrow { width: 42px; height: 42px; }
       .stream-cta { padding: 64px 24px; }
       .contact-strip { padding: 56px 24px; }
       .contact-inner { grid-template-columns: 1fr; gap: 40px; }
@@ -1131,9 +1268,18 @@
       .stat-card { padding: 22px 18px; }
       .stat-num { font-size: 40px; }
 
-      .shows-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 40px; }
+      .shows-track { gap: 16px; }
+      .shows-track .show-card { width: 240px; padding: 26px 22px; }
       .shows-section { padding: 48px 0; }
       .shows-inner { padding: 0 20px; }
+
+      .carousel-section { padding: 56px 0; }
+      .carousel-wrap { padding: 0 20px; }
+      .carousel { margin-top: 40px; border-radius: 16px; aspect-ratio: 1 / 1; }
+      .carousel-arrow { width: 38px; height: 38px; }
+      .carousel-arrow.prev { left: 12px; }
+      .carousel-arrow.next { right: 12px; }
+      .carousel-dots { bottom: 12px; }
 
       .stream-cta { padding: 56px 20px; }
       .stream-cta p { font-size: 15px; margin: 16px auto 32px; }
@@ -1172,6 +1318,10 @@
 
       .section { padding: 44px 16px; }
       .shows-inner { padding: 0 16px; }
+      .shows-track .show-card { width: 220px; }
+      .carousel-section { padding: 44px 0; }
+      .carousel-wrap { padding: 0 16px; }
+      .carousel-arrow { width: 34px; height: 34px; }
       .stream-cta { padding: 44px 16px; }
       .contact-strip { padding: 40px 16px; }
       footer { padding: 40px 16px 0; }
@@ -1293,6 +1443,52 @@
     </div>
   </section>
 
+  <!-- ── PHOTO CAROUSEL ── -->
+  <section class="carousel-section" id="gallery">
+    <div class="carousel-wrap">
+      <div class="reveal">
+        <p class="section-label">In The Community</p>
+        <h2 class="section-title">Mokopane <em>Moments</em></h2>
+      </div>
+
+      <div class="carousel" id="photoCarousel">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/28Rhrh2y/mtn-1.jpg" alt="Mokopane FM community moment 1" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/bJSSjwnf/mtn-2.jpg" alt="Mokopane FM community moment 2" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/8kWfKsNV/prem.jpg" alt="Mokopane FM community moment 3" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/pLV9LZjC/police.jpg" alt="Mokopane FM community moment 4" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/3wVW9Qcf/sassa.jpg" alt="Mokopane FM community moment 5" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/V6tvVHyb/water.jpg" alt="Mokopane FM community moment 6" />
+          </div>
+        </div>
+
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous slide">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Next slide">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── SHOWS ── -->
   <section class="shows-section" id="shows">
     <div class="shows-inner">
@@ -1300,8 +1496,10 @@
         <p class="section-label">On The Air</p>
         <h2 class="section-title">Our <em>Shows</em></h2>
       </div>
-      <div class="shows-grid">
-        <div class="show-card reveal reveal-delay-1">
+    </div>
+    <div class="shows-scroll">
+      <div class="shows-track" id="showsTrack">
+        <div class="show-card">
           <span class="show-time">Mon – Fri · 05:00 – 09:00</span>
           <div class="show-name">Morning Pulse</div>
           <p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p>
@@ -1310,7 +1508,7 @@
             <span class="host-name">The Morning Crew</span>
           </div>
         </div>
-        <div class="show-card reveal reveal-delay-2">
+        <div class="show-card">
           <span class="show-time">Mon – Fri · 09:00 – 12:00</span>
           <div class="show-name">Motse FM Midday</div>
           <p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p>
@@ -1319,7 +1517,7 @@
             <span class="host-name">Midday Drive</span>
           </div>
         </div>
-        <div class="show-card reveal reveal-delay-3">
+        <div class="show-card">
           <span class="show-time">Mon – Fri · 12:00 – 16:00</span>
           <div class="show-name">Lunch & Vibes</div>
           <p class="show-desc">The perfect lunchtime companion. Requests, shoutouts, and a healthy mix of local Sepedi and Afro-pop music.</p>
@@ -1328,7 +1526,7 @@
             <span class="host-name">Afternoon Hosts</span>
           </div>
         </div>
-        <div class="show-card reveal reveal-delay-1">
+        <div class="show-card">
           <span class="show-time">Mon – Fri · 16:00 – 19:00</span>
           <div class="show-name">Drive Time</div>
           <p class="show-desc">Your commute soundtrack. Live call-ins, traffic updates, and the biggest hits to get you home.</p>
@@ -1337,7 +1535,7 @@
             <span class="host-name">Drive Team</span>
           </div>
         </div>
-        <div class="show-card reveal reveal-delay-2">
+        <div class="show-card">
           <span class="show-time">Weekends · 10:00 – 14:00</span>
           <div class="show-name">Gospel Hour</div>
           <p class="show-desc">Uplifting gospel, praise and worship, and community spiritual programming every weekend morning.</p>
@@ -1346,7 +1544,62 @@
             <span class="host-name">Gospel Hosts</span>
           </div>
         </div>
-        <div class="show-card reveal reveal-delay-3">
+        <div class="show-card">
+          <span class="show-time">Fri – Sat · 20:00 – 00:00</span>
+          <div class="show-name">Night Frequency</div>
+          <p class="show-desc">Deep cuts, electronic, and Amapiano sessions for Mokopane's nightlife. Tune in and turn up.</p>
+          <div class="show-host">
+            <div class="host-avatar">NF</div>
+            <span class="host-name">Night Crew</span>
+          </div>
+        </div>
+        <!-- duplicate set for seamless infinite loop -->
+        <div class="show-card" aria-hidden="true">
+          <span class="show-time">Mon – Fri · 05:00 – 09:00</span>
+          <div class="show-name">Morning Pulse</div>
+          <p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p>
+          <div class="show-host">
+            <div class="host-avatar">MP</div>
+            <span class="host-name">The Morning Crew</span>
+          </div>
+        </div>
+        <div class="show-card" aria-hidden="true">
+          <span class="show-time">Mon – Fri · 09:00 – 12:00</span>
+          <div class="show-name">Motse FM Midday</div>
+          <p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p>
+          <div class="show-host">
+            <div class="host-avatar">MD</div>
+            <span class="host-name">Midday Drive</span>
+          </div>
+        </div>
+        <div class="show-card" aria-hidden="true">
+          <span class="show-time">Mon – Fri · 12:00 – 16:00</span>
+          <div class="show-name">Lunch & Vibes</div>
+          <p class="show-desc">The perfect lunchtime companion. Requests, shoutouts, and a healthy mix of local Sepedi and Afro-pop music.</p>
+          <div class="show-host">
+            <div class="host-avatar">LV</div>
+            <span class="host-name">Afternoon Hosts</span>
+          </div>
+        </div>
+        <div class="show-card" aria-hidden="true">
+          <span class="show-time">Mon – Fri · 16:00 – 19:00</span>
+          <div class="show-name">Drive Time</div>
+          <p class="show-desc">Your commute soundtrack. Live call-ins, traffic updates, and the biggest hits to get you home.</p>
+          <div class="show-host">
+            <div class="host-avatar">DT</div>
+            <span class="host-name">Drive Team</span>
+          </div>
+        </div>
+        <div class="show-card" aria-hidden="true">
+          <span class="show-time">Weekends · 10:00 – 14:00</span>
+          <div class="show-name">Gospel Hour</div>
+          <p class="show-desc">Uplifting gospel, praise and worship, and community spiritual programming every weekend morning.</p>
+          <div class="show-host">
+            <div class="host-avatar">GH</div>
+            <span class="host-name">Gospel Hosts</span>
+          </div>
+        </div>
+        <div class="show-card" aria-hidden="true">
           <span class="show-time">Fri – Sat · 20:00 – 00:00</span>
           <div class="show-name">Night Frequency</div>
           <p class="show-desc">Deep cuts, electronic, and Amapiano sessions for Mokopane's nightlife. Tune in and turn up.</p>
@@ -1645,6 +1898,59 @@
         hamburgerEl.classList.remove('active');
       });
     });
+
+    // ── Photo carousel ──
+    const carousel = document.getElementById('photoCarousel');
+    const carouselTrack = document.getElementById('carouselTrack');
+    const carouselSlides = carouselTrack.querySelectorAll('.carousel-slide');
+    const carouselDotsWrap = document.getElementById('carouselDots');
+    const carouselPrevBtn = document.getElementById('carouselPrev');
+    const carouselNextBtn = document.getElementById('carouselNext');
+    const slideCount = carouselSlides.length;
+    let currentSlide = 0;
+    let carouselTimer = null;
+
+    // Build dots
+    carouselSlides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      dot.addEventListener('click', () => goToSlide(i));
+      carouselDotsWrap.appendChild(dot);
+    });
+    const carouselDots = carouselDotsWrap.querySelectorAll('.carousel-dot');
+
+    function renderSlide() {
+      carouselTrack.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+      carouselDots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+    }
+
+    function goToSlide(index) {
+      currentSlide = (index + slideCount) % slideCount;
+      renderSlide();
+      restartAutoplay();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    function startAutoplay() {
+      carouselTimer = setInterval(nextSlide, 5000);
+    }
+
+    function restartAutoplay() {
+      clearInterval(carouselTimer);
+      startAutoplay();
+    }
+
+    carouselNextBtn.addEventListener('click', nextSlide);
+    carouselPrevBtn.addEventListener('click', prevSlide);
+
+    carousel.addEventListener('mouseenter', () => clearInterval(carouselTimer));
+    carousel.addEventListener('mouseleave', startAutoplay);
+
+    renderSlide();
+    startAutoplay();
   </script>
 </body>
 </html>
