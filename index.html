@@ -457,6 +457,8 @@
       position: relative;
       overflow: hidden;
       transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
     }
 
     .show-card::before {
@@ -491,6 +493,7 @@
       padding: 4px 12px;
       border-radius: 20px;
       margin-bottom: 16px;
+      width: fit-content;
     }
 
     .show-name {
@@ -505,33 +508,65 @@
       font-size: 14px;
       line-height: 1.6;
       color: rgba(255,255,255,0.5);
+      margin-bottom: 20px;
+    }
+
+    .show-footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .show-host {
-      margin-top: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .host-avatar {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--maroon), var(--gold-dk));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--white);
       flex-shrink: 0;
     }
 
     .host-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: rgba(255,255,255,0.7);
+    }
+
+    .tune-in-btn {
+      padding: 8px 16px;
+      border-radius: 30px;
+      background: rgba(245, 168, 0, 0.1);
+      border: 1px solid rgba(245, 168, 0, 0.3);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tune-in-btn:hover {
+      background: var(--gold);
+      color: var(--black);
+      border-color: var(--gold);
+      transform: scale(1.05);
     }
 
     /* ═══════════════════════════════════════
@@ -998,9 +1033,9 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      box-shadow: 0 8px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,168,0,0.08);
       transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
       min-width: 320px;
+      cursor: pointer;
     }
 
     .sticky-player.show { transform: translateX(-50%) translateY(0); }
@@ -1008,6 +1043,7 @@
     .player-station {
       display: flex;
       flex-direction: column;
+      flex: 1;
     }
 
     .player-name {
@@ -1037,6 +1073,7 @@
       transition: all 0.25s;
       flex-shrink: 0;
       box-shadow: 0 0 18px rgba(245,168,0,0.4);
+      z-index: 2;
     }
 
     .player-btn:hover {
@@ -1045,41 +1082,6 @@
     }
 
     .player-btn svg { margin-left: 2px; }
-
-    .player-expand {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background 0.25s, border-color 0.25s, transform 0.25s;
-      color: rgba(255,255,255,0.75);
-    }
-
-    .player-expand:hover {
-      background: rgba(245,168,0,0.15);
-      border-color: rgba(245,168,0,0.4);
-      color: var(--gold);
-      transform: scale(1.06);
-    }
-
-    /* Engine iframe stays invisible/off-screen — only used for actual audio decoding */
-    .player-engine {
-      position: fixed;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
-      bottom: 0;
-      right: 0;
-      border: none;
-      z-index: -1;
-    }
 
     .player-live {
       display: flex;
@@ -1115,261 +1117,166 @@
 
     /* ═══════════════════════════════════════
        PLAYER MODAL / BOTTOM SHEET
-       (shared system: used by sticky player expand
-       AND by each show card's Tune In button)
     ═══════════════════════════════════════ */
-    .modal-overlay {
+    .player-modal {
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: rgba(5,5,5,0.75);
-      backdrop-filter: blur(6px);
+      background: rgba(10,10,10,0.98);
+      backdrop-filter: blur(25px);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.35s ease, visibility 0.35s ease;
-      padding: 32px;
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .modal-overlay.open {
+    .player-modal.active {
       opacity: 1;
-      visibility: visible;
-    }
-
-    .modal-panel {
-      width: 100%;
-      max-width: 560px;
-      max-height: 88vh;
-      background: linear-gradient(165deg, var(--dark2) 0%, var(--black) 100%);
-      border: 1px solid rgba(245,168,0,0.2);
-      border-radius: 26px;
-      box-shadow: 0 30px 90px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,168,0,0.08);
-      overflow-y: auto;
-      transform: scale(0.92) translateY(24px);
-      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
-      position: relative;
-    }
-
-    .modal-overlay.open .modal-panel {
-      transform: scale(1) translateY(0);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 28px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .modal-header-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .modal-header-badge {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--maroon), var(--gold-dk));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
-      color: var(--white);
-      flex-shrink: 0;
-    }
-
-    .modal-header-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.03em;
-      color: var(--white);
-      line-height: 1;
-    }
-
-    .modal-header-sub {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      margin-top: 4px;
-      letter-spacing: 0.04em;
+      pointer-events: auto;
     }
 
     .modal-close {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: rgba(255,255,255,0.7);
-      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s;
-      flex-shrink: 0;
+      transition: all 0.3s;
     }
 
     .modal-close:hover {
-      background: rgba(229,62,62,0.15);
-      border-color: rgba(229,62,62,0.4);
-      color: #ff8080;
-      transform: scale(1.06);
+      background: var(--gold);
+      color: var(--black);
+      border-color: var(--gold);
     }
 
-    .modal-body {
-      padding: 28px;
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      padding: 40px;
+      transform: translateY(40px) scale(0.95);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .modal-live-pill {
+    .player-modal.active .modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-logo {
+      width: 160px;
+      margin: 0 auto 32px;
+      filter: drop-shadow(0 0 30px rgba(245, 168, 0, 0.4));
+    }
+
+    .modal-live-badge {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(229, 62, 62, 0.1);
+      border: 1px solid rgba(229, 62, 62, 0.3);
+      border-radius: 30px;
       color: #E53E3E;
-      background: rgba(229,62,62,0.1);
-      border: 1px solid rgba(229,62,62,0.25);
-      padding: 6px 14px;
-      border-radius: 20px;
-      margin-bottom: 18px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
     }
 
     .modal-show-name {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 34px;
-      letter-spacing: 0.03em;
-      color: var(--white);
+      font-size: 56px;
       line-height: 1;
+      color: var(--white);
       margin-bottom: 8px;
     }
 
-    .modal-show-time {
-      font-size: 13px;
-      font-weight: 600;
+    .modal-show-info {
+      font-size: 16px;
       color: var(--gold);
-      letter-spacing: 0.06em;
-      margin-bottom: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 40px;
     }
 
-    .modal-show-desc {
-      font-size: 14.5px;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 22px;
+    .modal-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
     }
 
-    .modal-show-host {
+    .modal-play-btn {
+      width: 100px;
+      height: 100px;
+      background: var(--gold);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      justify-content: center;
+      transition: all 0.3s;
+      box-shadow: 0 0 40px rgba(245, 168, 0, 0.4);
     }
 
-    .modal-player-frame-wrap {
-      border-radius: 16px;
-      overflow: hidden;
-      background: var(--dark3);
-      border: 1px solid rgba(245,168,0,0.12);
+    .modal-play-btn:hover {
+      transform: scale(1.08);
+      background: var(--gold-lt);
+      box-shadow: 0 0 60px rgba(245, 168, 0, 0.6);
     }
 
-    .modal-player-frame {
+    .modal-volume {
       width: 100%;
-      height: 420px;
-      border: none;
-      display: block;
+      max-width: 300px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
-    .modal-footer-note {
-      margin-top: 18px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.35);
-      text-align: center;
-      line-height: 1.6;
+    .modal-volume input[type=range] {
+      flex: 1;
+      accent-color: var(--gold);
+      height: 4px;
+      cursor: pointer;
     }
 
-    /* ── Desktop: full-screen modal variant ── */
-    @media (min-width: 851px) {
-      .modal-overlay.fullscreen-desktop .modal-panel {
-        max-width: 880px;
-        max-height: 92vh;
-      }
-      .modal-overlay.fullscreen-desktop .modal-player-frame {
-        height: 480px;
-      }
-    }
-
-    /* ── Mobile: bottom sheet variant ── */
+    /* Mobile Bottom Sheet Styles */
     @media (max-width: 850px) {
-      .modal-overlay {
+      .player-modal {
         align-items: flex-end;
-        padding: 0;
+        background: rgba(10,10,10,0.6);
       }
-
-      .modal-panel {
-        max-width: 100%;
-        max-height: 90vh;
-        border-radius: 26px 26px 0 0;
+      .modal-content {
+        background: var(--dark2);
+        border-radius: 32px 32px 0 0;
+        padding: 48px 24px 64px;
         transform: translateY(100%);
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
+        max-width: 100%;
+        border-top: 1px solid rgba(245, 168, 0, 0.2);
       }
-
-      .modal-overlay.open .modal-panel {
+      .player-modal.active .modal-content {
         transform: translateY(0);
       }
-
-      .modal-drag-handle {
-        width: 40px;
-        height: 4px;
-        border-radius: 3px;
-        background: rgba(255,255,255,0.2);
-        margin: 12px auto 0;
+      .modal-close {
+        top: -72px;
+        right: 50%;
+        transform: translateX(50%);
+        background: var(--dark2);
       }
-
-      .modal-header { padding: 16px 20px; }
-      .modal-body { padding: 20px; }
-      .modal-player-frame { height: 320px; }
-      .modal-show-name { font-size: 28px; }
-    }
-
-    /* ═══════════════════════════════════════
-       SHOW CARD — TUNE IN BUTTON
-    ═══════════════════════════════════════ */
-    .show-tune-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      padding: 10px 20px;
-      border-radius: 50px;
-      background: rgba(245,168,0,0.1);
-      border: 1px solid rgba(245,168,0,0.3);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .show-tune-btn:hover {
-      background: var(--gold);
-      color: var(--black);
-      border-color: var(--gold);
-      transform: translateY(-1px);
+      .modal-show-name { font-size: 42px; }
     }
 
     /* ═══════════════════════════════════════
@@ -1520,29 +1427,19 @@
       }
       .hero-logo-wrap { flex: 0 0 auto; max-width: 100%; }
       .hero-logo-wrap img { width: 60%; max-width: 260px; margin: 0 auto; display: block; }
-      .hero-text { max-width: 100%; text-align: center; }
-      .hero-title {
-        font-size: clamp(52px, 13vw, 84px);
-        text-shadow: 0 2px 18px rgba(0,0,0,0.85), 0 0 40px rgba(0,0,0,0.6);
+      
+      /* Improved Hero Text Visibility on Mobile */
+      .hero-text { 
+        max-width: 100%; 
+        text-align: center; 
+        background: rgba(10, 10, 10, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
-      .hero-sub {
-        font-size: 16px;
-        margin-bottom: 28px;
-        color: rgba(255,255,255,0.85);
-        text-shadow: 0 2px 10px rgba(0,0,0,0.9);
-      }
-      .hero-eyebrow { text-shadow: none; }
-
-      /* Stronger vertical scrim so text stays legible regardless of stacking position over the photo */
-      .hero-bg::after {
-        background: linear-gradient(
-          180deg,
-          rgba(10,10,10,0.35) 0%,
-          rgba(10,10,10,0.55) 45%,
-          rgba(10,10,10,0.88) 75%,
-          rgba(10,10,10,0.96) 100%
-        );
-      }
+      .hero-title { font-size: clamp(52px, 13vw, 84px); }
+      .hero-sub { font-size: 16px; margin-bottom: 28px; color: rgba(255, 255, 255, 0.85); }
 
       .section { padding: 64px 24px; }
       .section-title { font-size: clamp(36px, 8vw, 56px); }
@@ -1662,10 +1559,10 @@
       <li><a href="#live">Stream</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="https://iono.fm/s/154" target="_blank" rel="noopener" class="nav-listen">
+    <button onclick="togglePlayer()" class="nav-listen">
       <span class="dot"></span>
       Listen Live
-    </a>
+    </button>
     <div class="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
@@ -1696,6 +1593,12 @@
           <strong>Best local content</strong> in Mogalakwena & Waterberg.<br />
           The voice your community trusts, every day.
         </p>
+        <button onclick="togglePlayer()" class="hero-play-btn">
+          <div class="play-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          Listen Live
+        </button>
       </div>
     </div>
   </section>
@@ -1707,98 +1610,52 @@
       <div class="ticker-item"><span>★</span> Best Local Content in Mogalakwena</div>
       <div class="ticker-item"><span>★</span> Waterberg Region's #1 Community Station</div>
       <div class="ticker-item"><span>★</span> Broadcasting 24/7 — Always On</div>
-      <div class="ticker-item"><span>★</span> Stream Live at iono.fm/s/154</div>
+      <div class="ticker-item"><span>★</span> Stream Live directly on our site</div>
       <div class="ticker-item"><span>★</span> Mokopane FM 100.0 MHz</div>
       <div class="ticker-item"><span>★</span> Best Local Content in Mogalakwena</div>
       <div class="ticker-item"><span>★</span> Waterberg Region's #1 Community Station</div>
       <div class="ticker-item"><span>★</span> Broadcasting 24/7 — Always On</div>
-      <div class="ticker-item"><span>★</span> Stream Live at iono.fm/s/154</div>
+      <div class="ticker-item"><span>★</span> Stream Live directly on our site</div>
     </div>
   </div>
 
   <!-- ── ABOUT ── -->
   <section id="about" style="background: var(--dark);">
     <div class="section">
+      <p class="section-label reveal">Our Story</p>
+      <h2 class="section-title reveal">The Voice of <em>Mogalakwena</em></h2>
+      
       <div class="about-grid">
-        <div class="about-text reveal">
-          <p class="section-label">Who We Are</p>
-          <h2 class="section-title">The Voice of <em>Mogalakwena</em></h2>
+        <div class="about-text reveal reveal-delay-1">
           <p>
-            Mokopane FM is Mogalakwena's premier community radio station, broadcasting on <strong>100.0 MHz</strong> to the heart of Limpopo. We celebrate local culture, language, news, and music — built by the community, for the community.
+            Mokopane FM 100.0 MHz is a community-driven radio station dedicated to serving the diverse people of <strong>Mogalakwena and the Waterberg region</strong>. We believe in the power of local voices to inspire change, preserve culture, and keep our community informed.
           </p>
           <p>
-            From morning shows to late-night music, our programming is rooted in the stories, sounds, and spirit of Waterberg. We connect families, empower voices, and keep Mokopane informed.
+            From the latest news and traffic updates to the best in local music and cultural programming, we are your 24/7 companion. Our mission is to provide a platform for growth, education, and entertainment that resonates with the heartbeat of Mokopane.
           </p>
-          <div class="hours-badge" style="margin-top: 8px;">
-            <span class="hours-dot"></span>
-            Always Open — 24 Hours a Day
-          </div>
+          <p>
+            Join us on <strong>100.0 FM</strong> or stream us live right here on our website to stay connected to your community, no matter where you are.
+          </p>
         </div>
 
-        <div class="about-stats">
-          <div class="stat-card reveal reveal-delay-1">
+        <div class="about-stats reveal reveal-delay-2">
+          <div class="stat-card">
             <div class="stat-num">100.0</div>
             <div class="stat-label">MHz Frequency</div>
           </div>
-          <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-card">
             <div class="stat-num">24/7</div>
-            <div class="stat-label">Always Broadcasting</div>
+            <div class="stat-label">Broadcasting</div>
           </div>
-          <div class="stat-card reveal reveal-delay-3">
-            <div class="stat-num">1<span style="font-size:28px">st</span></div>
-            <div class="stat-label">Community Voice</div>
+          <div class="stat-card">
+            <div class="stat-num">100k+</div>
+            <div class="stat-label">Local Listeners</div>
           </div>
-          <div class="stat-card reveal reveal-delay-4">
-            <div class="stat-num">FM</div>
-            <div class="stat-label">Local & Live</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── PHOTO CAROUSEL ── -->
-  <section class="carousel-section" id="gallery">
-    <div class="carousel-wrap">
-      <div class="reveal">
-        <p class="section-label">In The Community</p>
-        <h2 class="section-title">Mokopane <em>Moments</em></h2>
-      </div>
-
-      <div class="carousel" id="photoCarousel">
-        <div class="carousel-track" id="carouselTrack">
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/28Rhrh2y/mtn-1.jpg" alt="Mokopane FM community moment 1" />
-          </div>
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/bJSSjwnf/mtn-2.jpg" alt="Mokopane FM community moment 2" />
-          </div>
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/8kWfKsNV/prem.jpg" alt="Mokopane FM community moment 3" />
-          </div>
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/pLV9LZjC/police.jpg" alt="Mokopane FM community moment 4" />
-          </div>
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/3wVW9Qcf/sassa.jpg" alt="Mokopane FM community moment 5" />
-          </div>
-          <div class="carousel-slide">
-            <img src="https://i.postimg.cc/V6tvVHyb/water.jpg" alt="Mokopane FM community moment 6" />
+          <div class="stat-card">
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Community Focused</div>
           </div>
         </div>
-
-        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous slide">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
-          </svg>
-        </button>
-        <button class="carousel-arrow next" id="carouselNext" aria-label="Next slide">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18l6-6-6-6"/>
-          </svg>
-        </button>
-
-        <div class="carousel-dots" id="carouselDots"></div>
       </div>
     </div>
   </section>
@@ -1806,122 +1663,240 @@
   <!-- ── SHOWS ── -->
   <section class="shows-section" id="shows">
     <div class="shows-inner">
-      <div class="reveal">
-        <p class="section-label">On The Air</p>
-        <h2 class="section-title">Our <em>Shows</em></h2>
-      </div>
+      <p class="section-label reveal">Programming</p>
+      <h2 class="section-title reveal">Our <em>Daily</em> Lineup</h2>
     </div>
+
     <div class="shows-scroll">
       <div class="shows-track" id="showsTrack">
+        <!-- Show Card 1 -->
         <div class="show-card">
           <span class="show-time">Mon – Fri · 05:00 – 09:00</span>
           <div class="show-name">Morning Pulse</div>
           <p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p>
-          <div class="show-host">
-            <div class="host-avatar">MP</div>
-            <span class="host-name">The Morning Crew</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">MP</div>
+              <span class="host-name">The Morning Crew</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+        <!-- Show Card 2 -->
         <div class="show-card">
           <span class="show-time">Mon – Fri · 09:00 – 12:00</span>
           <div class="show-name">Motse FM Midday</div>
           <p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p>
-          <div class="show-host">
-            <div class="host-avatar">MD</div>
-            <span class="host-name">Midday Drive</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">MD</div>
+              <span class="host-name">Midday Drive</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+        <!-- Show Card 3 -->
         <div class="show-card">
           <span class="show-time">Mon – Fri · 12:00 – 16:00</span>
           <div class="show-name">Lunch & Vibes</div>
           <p class="show-desc">The perfect lunchtime companion. Requests, shoutouts, and a healthy mix of local Sepedi and Afro-pop music.</p>
-          <div class="show-host">
-            <div class="host-avatar">LV</div>
-            <span class="host-name">Afternoon Hosts</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">LV</div>
+              <span class="host-name">Afternoon Hosts</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Lunch & Vibes', 'Mon – Fri · 12:00 – 16:00', 'Afternoon Hosts')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+        <!-- Show Card 4 -->
         <div class="show-card">
           <span class="show-time">Mon – Fri · 16:00 – 19:00</span>
           <div class="show-name">Drive Time</div>
           <p class="show-desc">Your commute soundtrack. Live call-ins, traffic updates, and the biggest hits to get you home.</p>
-          <div class="show-host">
-            <div class="host-avatar">DT</div>
-            <span class="host-name">Drive Team</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">DT</div>
+              <span class="host-name">Drive Team</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Drive Time', 'Mon – Fri · 16:00 – 19:00', 'Drive Team')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+        <!-- Show Card 5 -->
         <div class="show-card">
           <span class="show-time">Weekends · 10:00 – 14:00</span>
           <div class="show-name">Gospel Hour</div>
           <p class="show-desc">Uplifting gospel, praise and worship, and community spiritual programming every weekend morning.</p>
-          <div class="show-host">
-            <div class="host-avatar">GH</div>
-            <span class="host-name">Gospel Hosts</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">GH</div>
+              <span class="host-name">Gospel Hosts</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Gospel Hour', 'Weekends · 10:00 – 14:00', 'Gospel Hosts')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+        <!-- Show Card 6 -->
         <div class="show-card">
           <span class="show-time">Fri – Sat · 20:00 – 00:00</span>
           <div class="show-name">Night Frequency</div>
           <p class="show-desc">Deep cuts, electronic, and Amapiano sessions for Mokopane's nightlife. Tune in and turn up.</p>
-          <div class="show-host">
-            <div class="host-avatar">NF</div>
-            <span class="host-name">Night Crew</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">NF</div>
+              <span class="host-name">Night Crew</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Night Frequency', 'Fri – Sat · 20:00 – 00:00', 'Night Crew')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+
         <!-- duplicate set for seamless infinite loop -->
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Mon – Fri · 05:00 – 09:00</span>
           <div class="show-name">Morning Pulse</div>
           <p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p>
-          <div class="show-host">
-            <div class="host-avatar">MP</div>
-            <span class="host-name">The Morning Crew</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">MP</div>
+              <span class="host-name">The Morning Crew</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Mon – Fri · 09:00 – 12:00</span>
           <div class="show-name">Motse FM Midday</div>
           <p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p>
-          <div class="show-host">
-            <div class="host-avatar">MD</div>
-            <span class="host-name">Midday Drive</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">MD</div>
+              <span class="host-name">Midday Drive</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Mon – Fri · 12:00 – 16:00</span>
           <div class="show-name">Lunch & Vibes</div>
           <p class="show-desc">The perfect lunchtime companion. Requests, shoutouts, and a healthy mix of local Sepedi and Afro-pop music.</p>
-          <div class="show-host">
-            <div class="host-avatar">LV</div>
-            <span class="host-name">Afternoon Hosts</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">LV</div>
+              <span class="host-name">Afternoon Hosts</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Lunch & Vibes', 'Mon – Fri · 12:00 – 16:00', 'Afternoon Hosts')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Mon – Fri · 16:00 – 19:00</span>
           <div class="show-name">Drive Time</div>
           <p class="show-desc">Your commute soundtrack. Live call-ins, traffic updates, and the biggest hits to get you home.</p>
-          <div class="show-host">
-            <div class="host-avatar">DT</div>
-            <span class="host-name">Drive Team</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">DT</div>
+              <span class="host-name">Drive Team</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Drive Time', 'Mon – Fri · 16:00 – 19:00', 'Drive Team')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Weekends · 10:00 – 14:00</span>
           <div class="show-name">Gospel Hour</div>
           <p class="show-desc">Uplifting gospel, praise and worship, and community spiritual programming every weekend morning.</p>
-          <div class="show-host">
-            <div class="host-avatar">GH</div>
-            <span class="host-name">Gospel Hosts</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">GH</div>
+              <span class="host-name">Gospel Hosts</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Gospel Hour', 'Weekends · 10:00 – 14:00', 'Gospel Hosts')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
         <div class="show-card" aria-hidden="true">
           <span class="show-time">Fri – Sat · 20:00 – 00:00</span>
           <div class="show-name">Night Frequency</div>
           <p class="show-desc">Deep cuts, electronic, and Amapiano sessions for Mokopane's nightlife. Tune in and turn up.</p>
-          <div class="show-host">
-            <div class="host-avatar">NF</div>
-            <span class="host-name">Night Crew</span>
+          <div class="show-footer">
+            <div class="show-host">
+              <div class="host-avatar">NF</div>
+              <span class="host-name">Night Crew</span>
+            </div>
+            <button class="tune-in-btn" onclick="openShowModal('Night Frequency', 'Fri – Sat · 20:00 – 00:00', 'Night Crew')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Tune In
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PHOTO CAROUSEL ── -->
+  <section class="carousel-section">
+    <div class="carousel-wrap">
+      <p class="section-label reveal">Gallery</p>
+      <h2 class="section-title reveal">Mokopane FM <em>In Action</em></h2>
+      
+      <div class="carousel reveal" id="photoCarousel">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/28Rhrh2y/mtn-1.jpg" alt="Mokopane FM Studio" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/bJSSjwnf/mtn-2.jpg" alt="Community Event" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/8kWfKsNV/prem.jpg" alt="Live Broadcast" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/pLV9LZjC/police.jpg" alt="Mokopane FM Team" />
+          </div>
+         <div class="carousel-slide">
+            <img src="https://i.postimg.cc/3wVW9Qcf/sassa.jpg" alt="Mokopane FM Team" />
+          </div>
+          <div class="carousel-slide">
+            <img src="https://i.postimg.cc/V6tvVHyb/water.jpg" alt="Mokopane FM Team" />
+          </div>
+        </div>
+
+        <button class="carousel-arrow prev" id="carouselPrev" aria-label="Previous Slide">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="carousel-arrow next" id="carouselNext" aria-label="Next Slide">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+
+        <div class="carousel-dots" id="carouselDots"></div>
       </div>
     </div>
   </section>
@@ -1932,10 +1907,10 @@
     <h2 class="section-title reveal">Stream Us <em>Anywhere</em></h2>
     <p class="reveal">Listen to Mokopane FM 100.0 MHz live from anywhere in the world. Tap the button below and you're instantly connected to the heartbeat of Mogalakwena.</p>
     <div class="cta-btn-group reveal">
-      <a href="https://iono.fm/s/154" target="_blank" rel="noopener" class="btn-primary">
+      <button onclick="togglePlayer()" class="btn-primary">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-        Listen Live on IONO.fm
-      </a>
+        Listen Live Now
+      </button>
       <a href="tel:0154911208" class="btn-outline">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         Call Us
@@ -2024,19 +1999,15 @@
           The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24 hours a day, 7 days a week.
         </p>
         <div class="social-row">
-          <!-- Facebook -->
           <a href="#" class="social-btn" aria-label="Facebook">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
           </a>
-          <!-- Twitter/X -->
           <a href="#" class="social-btn" aria-label="Twitter">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           </a>
-          <!-- Instagram -->
           <a href="#" class="social-btn" aria-label="Instagram">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
-          <!-- WhatsApp -->
           <a href="https://wa.me/270154911208" class="social-btn" aria-label="WhatsApp">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           </a>
@@ -2057,12 +2028,12 @@
       <div class="footer-col">
         <h5>On Air</h5>
         <ul class="footer-links">
-          <li><a href="#">Morning Pulse</a></li>
-          <li><a href="#">Motse FM Midday</a></li>
-          <li><a href="#">Lunch & Vibes</a></li>
-          <li><a href="#">Drive Time</a></li>
-          <li><a href="#">Gospel Hour</a></li>
-          <li><a href="#">Night Frequency</a></li>
+          <li><a href="#shows">Morning Pulse</a></li>
+          <li><a href="#shows">Motse FM Midday</a></li>
+          <li><a href="#shows">Lunch & Vibes</a></li>
+          <li><a href="#shows">Drive Time</a></li>
+          <li><a href="#shows">Gospel Hour</a></li>
+          <li><a href="#shows">Night Frequency</a></li>
         </ul>
       </div>
 
@@ -2087,20 +2058,14 @@
               mokopanefm.co.za
             </a>
           </li>
-          <li>
-            <a href="https://iono.fm/s/154" target="_blank">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v9.28a4 4 0 10 1.56v-9.28a4 4 0 00-1.56 0z"/></svg>
-              Live on IONO.fm
-            </a>
-          </li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
       <p class="footer-copy">
-        &copy; 2025 Mokopane FM Community Radio Station. All rights reserved.
-        Broadcasting on <a href="https://iono.fm/s/154" target="_blank">100.0 MHz</a> — Limpopo, South Africa.
+        &copy; 2026 Mokopane FM Community Radio Station. All rights reserved.
+        Broadcasting on 100.0 MHz — Limpopo, South Africa.
       </p>
       <div class="footer-legal">
         <a href="#">Privacy Policy</a>
@@ -2111,8 +2076,8 @@
   </footer>
 
   <!-- ── STICKY PLAYER ── -->
-  <div class="sticky-player" id="stickyPlayer">
-    <div class="eq-bars" id="eqBars">
+  <div class="sticky-player" id="stickyPlayer" onclick="openPlayerModal()">
+    <div class="eq-bars paused" id="eqBars">
       <div class="eq-bar"></div>
       <div class="eq-bar"></div>
       <div class="eq-bar"></div>
@@ -2126,7 +2091,7 @@
       <span class="live-dot"></span>
       Live
     </div>
-    <button class="player-btn" id="playerBtn" onclick="togglePlayer()" aria-label="Play / Pause">
+    <button class="player-btn" id="playerBtn" onclick="event.stopPropagation(); togglePlayer()" aria-label="Play / Pause">
       <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24" fill="black">
         <path d="M8 5v14l11-7z"/>
       </svg>
@@ -2136,12 +2101,53 @@
     </button>
   </div>
 
+  <!-- ── PLAYER MODAL / BOTTOM SHEET ── -->
+  <div class="player-modal" id="playerModal">
+    <button class="modal-close" onclick="closePlayerModal()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-content">
+      <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" class="modal-logo" />
+      <div class="modal-live-badge">
+        <span class="live-dot"></span>
+        On Air Now
+      </div>
+      <h2 class="modal-show-name" id="modalShowName">Mokopane FM</h2>
+      <p class="modal-show-info" id="modalShowInfo">100.0 MHz · The Voice of Mogalakwena</p>
+      
+      <div class="modal-controls">
+        <button class="modal-play-btn" onclick="togglePlayer()">
+          <svg id="modalPlayIcon" width="48" height="48" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="modalPauseIcon" width="48" height="48" viewBox="0 0 24 24" fill="black" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        
+        <div class="modal-volume">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+          <input type="range" min="0" max="1" step="0.01" value="1" oninput="changeVolume(this.value)" />
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden audio element -->
   <audio id="radioStream" preload="none">
-    <source src="https://iono.fm/s/154" type="audio/mpeg" />
+    <source src="https://stream.iono.fm/s154" type="audio/mpeg" />
   </audio>
 
   <script>
+    // ── Global State ──
+    let isPlaying = false;
+    const audio = document.getElementById('radioStream');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const modalPlayIcon = document.getElementById('modalPlayIcon');
+    const modalPauseIcon = document.getElementById('modalPauseIcon');
+    const eqBars = document.getElementById('eqBars');
+    const stickyPlayer = document.getElementById('stickyPlayer');
+    const playerModal = document.getElementById('playerModal');
+    const modalShowName = document.getElementById('modalShowName');
+    const modalShowInfo = document.getElementById('modalShowInfo');
+
     // ── Navbar scroll ──
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
@@ -2149,36 +2155,68 @@
     });
 
     // ── Sticky player reveal ──
-    const stickyPlayer = document.getElementById('stickyPlayer');
     setTimeout(() => stickyPlayer.classList.add('show'), 2000);
 
-    // ── Audio player ──
-    const audio = document.getElementById('radioStream');
-    const playIcon = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const eqBars = document.getElementById('eqBars');
-    let isPlaying = false;
-
+    // ── Audio player logic ──
     function togglePlayer() {
       if (!isPlaying) {
-        // If audio src is already loaded or use IONO embed approach
-        audio.src = 'https://stream.iono.fm/s154';
-        audio.play().catch(() => {
-          // Fallback: open iono page
-          window.open('https://iono.fm/s/154', '_blank');
+        audio.play().then(() => {
+          updateUI(true);
+        }).catch(err => {
+          console.error("Playback failed:", err);
+          // Some browsers require a fresh interaction
+          audio.src = 'https://stream.iono.fm/s154';
+          audio.play();
+          updateUI(true);
         });
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
-        eqBars.classList.remove('paused');
-        isPlaying = true;
       } else {
         audio.pause();
-        audio.src = '';
+        updateUI(false);
+      }
+    }
+
+    function updateUI(playing) {
+      isPlaying = playing;
+      if (playing) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        modalPlayIcon.style.display = 'none';
+        modalPauseIcon.style.display = 'block';
+        eqBars.classList.remove('paused');
+      } else {
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
+        modalPlayIcon.style.display = 'block';
+        modalPauseIcon.style.display = 'none';
         eqBars.classList.add('paused');
-        isPlaying = false;
       }
+    }
+
+    function changeVolume(val) {
+      audio.volume = val;
+    }
+
+    // ── Modal logic ──
+    function openPlayerModal() {
+      playerModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePlayerModal() {
+      playerModal.classList.remove('active');
+      document.body.style.overflow = '';
+      // Reset modal text to default station info after closing
+      setTimeout(() => {
+        modalShowName.innerText = "Mokopane FM";
+        modalShowInfo.innerText = "100.0 MHz · The Voice of Mogalakwena";
+      }, 500);
+    }
+
+    function openShowModal(name, time, host) {
+      modalShowName.innerText = name;
+      modalShowInfo.innerText = time + " · with " + host;
+      openPlayerModal();
+      if (!isPlaying) togglePlayer();
     }
 
     // ── Scroll reveal ──
@@ -2204,7 +2242,6 @@
       hamburgerEl.classList.toggle('active', menuOpen);
     }
 
-    // Close menu on link click
     document.querySelectorAll('.nav-links a').forEach(link => {
       link.addEventListener('click', () => {
         menuOpen = false;
@@ -2224,7 +2261,6 @@
     let currentSlide = 0;
     let carouselTimer = null;
 
-    // Build dots
     carouselSlides.forEach((_, i) => {
       const dot = document.createElement('button');
       dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
@@ -2259,7 +2295,6 @@
 
     carouselNextBtn.addEventListener('click', nextSlide);
     carouselPrevBtn.addEventListener('click', prevSlide);
-
     carousel.addEventListener('mouseenter', () => clearInterval(carouselTimer));
     carousel.addEventListener('mouseleave', startAutoplay);
 
