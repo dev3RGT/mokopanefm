@@ -62,7 +62,7 @@
     }
 
     .nav-logo img {
-      height: 52px;
+      height: 68px;
       width: auto;
       filter: drop-shadow(0 0 12px rgba(245, 168, 0, 0.4));
       transition: filter 0.3s;
@@ -191,14 +191,16 @@
 
     /* Left: logo */
     .hero-logo-wrap {
-      flex: 0 0 auto;
+      flex: 0 0 85%;
+      max-width: 85%;
       opacity: 0;
       transform: translateX(-80px);
       animation: slideInLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
     }
 
     .hero-logo-wrap img {
-      width: 280px;
+      width: 100%;
+      height: auto;
       filter: drop-shadow(0 0 40px rgba(245, 168, 0, 0.55));
     }
 
@@ -872,6 +874,7 @@
       gap: 16px;
       box-shadow: 0 8px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(245,168,0,0.08);
       transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+      width: 80%;
       min-width: 320px;
     }
 
@@ -1083,20 +1086,6 @@
           <strong>Best local content</strong> in Mogalakwena & Waterberg.<br />
           The voice your community trusts, every day.
         </p>
-        <div style="margin-bottom:12px;">
-          <span class="hero-live-badge" style="margin-bottom:0">
-            <span class="live-dot"></span>
-            Broadcasting 24/7
-          </span>
-        </div>
-        <a href="https://iono.fm/s/154" target="_blank" rel="noopener" class="hero-play-btn">
-          <span class="play-icon">
-            <svg width="14" height="16" viewBox="0 0 14 16" fill="white">
-              <path d="M2 1.5L12 8L2 14.5V1.5Z"/>
-            </svg>
-          </span>
-          Listen Live Now
-        </a>
       </div>
     </div>
   </section>
