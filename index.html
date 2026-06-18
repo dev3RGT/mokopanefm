@@ -494,6 +494,108 @@
 
     .show-card:hover::before { transform: scaleX(1); }
 
+    /* ── FEATURED SHOW CARD (Lunch & Vibes) ── */
+    .show-card--featured {
+      overflow: visible;
+      padding: 0;
+      background: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .show-card--featured::before { display: none; }
+    .show-card--featured:hover { transform: translateY(-6px); box-shadow: none; border-color: transparent; }
+
+    .featured-img-area {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--dark3);
+      border: 1px solid rgba(245,168,0,0.15);
+      flex-shrink: 0;
+    }
+
+    .featured-card-img {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 115%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    .featured-card-bottom {
+      position: relative;
+      z-index: 1;
+      padding: 18px 20px;
+      background: var(--dark3);
+      border-radius: 18px;
+      border: 1px solid rgba(245,168,0,0.15);
+      width: 100%;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .featured-bottom-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .featured-show-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .featured-show-time {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(245,168,0,0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+    .featured-play-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 3px solid rgba(0,0,0,0.4);
+      box-shadow: 0 0 0 3px var(--gold-dk), 0 4px 16px rgba(245,168,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.25s, box-shadow 0.25s;
+      color: var(--black);
+    }
+
+    .featured-play-btn svg { margin-left: 2px; }
+
+    .featured-play-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 3px var(--gold-dk), 0 6px 24px rgba(245,168,0,0.65);
+    }
+
     .show-time {
       display: inline-block;
       font-size: 11px;
@@ -1455,14 +1557,17 @@
             </button>
           </div>
         </div>
-        <div class="show-card">
-          <span class="show-time">Mon – Fri · 12:00 – 16:00</span>
-          <div class="show-name">Lunch & Vibes</div>
-          <p class="show-desc">The perfect lunchtime companion. Requests, shoutouts, and a healthy mix of local Sepedi and Afro-pop music.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">LV</div><span class="host-name">Afternoon Hosts</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Lunch & Vibes', 'Mon – Fri · 12:00 – 16:00', 'Afternoon Hosts')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area">
+            <img src="https://i.postimg.cc/hGDhzd0N/drive.png" alt="Lunch & Vibes" class="featured-card-img" />
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Lunch &amp; Vibes</div>
+              <span class="featured-show-time">Mon – Fri · 12:00 – 16:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Lunch &amp; Vibes', 'Mon – Fri · 12:00 – 16:00', 'Afternoon Hosts')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
