@@ -395,7 +395,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
-      align-items: center;
+      align-items: end;
     }
 
     .about-text p {
@@ -1208,19 +1208,27 @@
     .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
 
     /* ── OUR STORY IMAGE ── */
+    #about {
+      overflow: hidden;
+    }
+
+    #about .section {
+      padding-bottom: 0;
+    }
+
     .about-image-wrap {
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      align-self: stretch;
     }
 
     .about-image {
-      width: 100%;
-      max-width: 100%;
+      width: 150%;
+      max-width: 150%;
       display: block;
       object-fit: contain;
       object-position: bottom center;
+      margin-left: -25%;
     }
 
     /* ═══════════════════════════════════════
@@ -1302,8 +1310,9 @@
       .about-stats { gap: 16px; }
       .stat-card { padding: 20px 16px; }
       .stat-num { font-size: 40px; }
+      #about .section { padding-bottom: 64px; }
       .about-image-wrap { min-height: 280px; }
-      .about-image { max-height: 380px; object-fit: contain; }
+      .about-image { width: 100%; max-width: 100%; margin-left: 0; max-height: 380px; object-fit: contain; }
 
       .contact-inner { grid-template-columns: 1fr; gap: 32px; }
 
