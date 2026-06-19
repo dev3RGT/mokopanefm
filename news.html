@@ -231,55 +231,29 @@
       line-height: 1.6;
     }
 
-    .live-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 16px;
-      background: rgba(76, 175, 109, 0.1);
-      border: 1px solid rgba(76, 175, 109, 0.35);
-      border-radius: 30px;
-      color: #4CAF6D;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-
-    .live-pill .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #4CAF6D;
-      box-shadow: 0 0 8px rgba(76,175,109,0.7);
-      animation: pulse 1.6s infinite;
-    }
-
     /* ═══════════════════════════════════════
        NEWS FEED
     ═══════════════════════════════════════ */
     .news-wrap {
-      max-width: 1100px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 0 48px 120px;
     }
 
     .news-feed {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
     }
 
-    .news-row {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 32px;
+    .news-card {
+      display: flex;
+      flex-direction: column;
       background: var(--card-bg);
-      border: 1px solid rgba(245,168,0,0.1);
-      border-radius: 20px;
+      border-radius: 18px;
       overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
       opacity: 0;
       transform: translateY(24px);
       animation: rowIn 0.6s ease forwards;
@@ -287,95 +261,104 @@
 
     @keyframes rowIn { to { opacity: 1; transform: none; } }
 
-    .news-row:hover {
-      border-color: rgba(245,168,0,0.28);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(245,168,0,0.08);
+    .news-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45), 0 0 30px rgba(245,168,0,0.1);
     }
 
-    .news-row.no-img { grid-template-columns: 1fr; }
+    .news-card:active { transform: translateY(-2px); }
 
-    .news-row-img {
+    .news-card-imgwrap {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      flex: 0 0 auto;
+      background: var(--dark3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .news-card-img {
       width: 100%;
       height: 100%;
-      min-height: 200px;
       object-fit: cover;
       display: block;
-      background: var(--dark3);
+      transition: transform 0.5s ease;
     }
 
-    .news-row-body {
-      padding: 28px 30px 28px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      justify-content: center;
-    }
+    .news-card:hover .news-card-img { transform: scale(1.04); }
 
-    .news-row.no-img .news-row-body { padding: 30px 32px; }
-
-    .news-row-top {
+    .news-card-imgwrap.no-img {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      justify-content: center;
+      background: linear-gradient(145deg, #2a2a2a 0%, #444444 100%);
     }
+    .news-card-imgwrap.no-img svg { opacity: 0.3; }
 
-    .news-row-date {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .news-row-new {
+    .news-card-new {
+      position: absolute;
+      top: 14px;
+      left: 14px;
       font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--black);
       background: var(--gold);
-      padding: 3px 9px;
+      padding: 4px 10px;
       border-radius: 20px;
       animation: pulse 1.6s infinite;
+      z-index: 2;
     }
 
-    .news-row-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 30px;
-      letter-spacing: 0.015em;
-      line-height: 1.1;
-      color: var(--text);
-    }
-
-    .news-row-excerpt {
-      font-size: 14.5px;
-      line-height: 1.7;
-      color: var(--text);
-      opacity: 0.65;
-      max-width: 640px;
-    }
-
-    .news-row-link {
-      margin-top: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-      display: inline-flex;
+    .news-card-body {
+      flex: 0 0 auto;
+      padding: 14px 16px;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      width: fit-content;
+      justify-content: space-between;
+      gap: 10px;
     }
-    .news-row-link:hover { text-decoration: underline; }
+
+    .news-card-titlewrap { min-width: 0; }
+
+    .news-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.01em;
+      line-height: 1.15;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .news-card-date {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      opacity: 0.5;
+      margin-top: 2px;
+    }
+
+    .news-card-arrow {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(245,168,0,0.1);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s;
+    }
+    .news-card:hover .news-card-arrow { background: var(--gold); color: var(--black); }
 
     /* Flash highlight applied briefly when a brand-new item streams in live */
-    .news-row.flash {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 1px rgba(245,168,0,0.4), 0 20px 50px rgba(0,0,0,0.4), 0 0 40px rgba(245,168,0,0.25);
+    .news-card.flash {
+      box-shadow: 0 0 0 2px var(--gold), 0 20px 50px rgba(0,0,0,0.45), 0 0 40px rgba(245,168,0,0.3);
     }
 
     .news-empty {
@@ -411,11 +394,13 @@
 
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    @media (max-width: 750px) {
-      .news-row { grid-template-columns: 1fr; }
-      .news-row-img { min-height: 180px; }
-      .news-row-body { padding: 22px 24px 26px; }
-      .news-row-title { font-size: 26px; }
+    @media (max-width: 950px) {
+      .news-feed { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .news-feed { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .news-card-title { font-size: 14.5px; }
+      .news-card-body { padding: 11px 12px; }
     }
 
     /* ═══════════════════════════════════════
@@ -693,6 +678,143 @@
 
     .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
 
+    /* ═══════════════════════════════════════
+       NEWS DETAIL — modal on desktop, bottom sheet on mobile
+    ═══════════════════════════════════════ */
+    .news-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2200;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .news-modal.active { opacity: 1; pointer-events: auto; }
+
+    .news-modal-content {
+      width: 100%;
+      max-width: 640px;
+      max-height: 86vh;
+      overflow-y: auto;
+      background: var(--dark2);
+      border-radius: 28px;
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+
+    .news-modal.active .news-modal-content { transform: translateY(0) scale(1); }
+
+    .news-modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      z-index: 5;
+    }
+    .news-modal-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+    .news-modal-img {
+      width: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      display: block;
+      border-radius: 28px 28px 0 0;
+    }
+
+    .news-modal-imgwrap.no-img {
+      width: 100%;
+      height: 200px;
+      border-radius: 28px 28px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #2a2a2a 0%, #444444 100%);
+    }
+    .news-modal-imgwrap.no-img svg { opacity: 0.3; }
+
+    .news-modal-body { padding: 32px 36px 40px; }
+
+    .news-modal-date {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .news-modal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      letter-spacing: 0.015em;
+      line-height: 1.08;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .news-modal-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text);
+      opacity: 0.75;
+      white-space: pre-wrap;
+    }
+
+    .news-modal-link {
+      margin-top: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s;
+    }
+    .news-modal-link:hover { background: var(--gold-lt); }
+
+    @media (max-width: 750px) {
+      .news-modal { align-items: flex-end; padding: 0; }
+      .news-modal-content {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 24px 24px 0 0;
+        transform: translateY(100%);
+      }
+      .news-modal.active .news-modal-content { transform: translateY(0); }
+      .news-modal-drag { display: block; position: sticky; top: 0; background: var(--dark2); padding-top: 14px; z-index: 4; border-radius: 24px 24px 0 0; }
+      .news-modal-close { top: 14px; right: 14px; background: rgba(0,0,0,0.55); }
+      .news-modal-img, .news-modal-imgwrap.no-img { border-radius: 0; max-height: 260px; }
+      .news-modal-body { padding: 24px 22px 36px; }
+      .news-modal-title { font-size: 28px; }
+    }
+
+    .news-modal-drag { display: none; }
+
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
     @keyframes eqAnim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
 
@@ -768,11 +890,11 @@
       <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM Logo" />
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">About</a></li>
-      <li><a href="index.html">Shows</a></li>
+      <li><a href="main-website-live-synced.html#about">About</a></li>
+      <li><a href="main-website-live-synced.html#shows">Shows</a></li>
       <li><a href="news.html" class="active">News</a></li>
-      <li><a href="index.html">Stream</a></li>
-      <li><a href="index.html">Contact</a></li>
+      <li><a href="main-website-live-synced.html#live">Stream</a></li>
+      <li><a href="main-website-live-synced.html#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
       <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
@@ -791,7 +913,6 @@
   </nav>
 
   <header class="page-header">
-    <div class="live-pill"><span class="dot"></span>Synced live from the newsroom</div>
     <p class="section-label">Updates</p>
     <h1 class="page-title">Latest <em>News</em></h1>
     <p class="page-sub">Everything posted by the Mokopane FM newsroom, updated the moment it's published — no refresh needed.</p>
@@ -806,6 +927,24 @@
     <div class="news-feed" id="newsFeed"></div>
   </div>
 
+  <div class="news-modal" id="newsModal">
+    <div class="news-modal-content" id="newsModalContent">
+      <div class="news-modal-drag"><div class="drag-handle" style="display:block;"></div></div>
+      <button class="news-modal-close" onclick="closeNewsModal()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="newsModalImgSlot"></div>
+      <div class="news-modal-body">
+        <span class="news-modal-date" id="newsModalDate"></span>
+        <h2 class="news-modal-title" id="newsModalTitle"></h2>
+        <p class="news-modal-text" id="newsModalText"></p>
+        <a class="news-modal-link" id="newsModalLink" href="#" target="_blank" rel="noopener" style="display:none;">Read more
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
@@ -816,11 +955,11 @@
       <div class="footer-col">
         <h5>Navigate</h5>
         <ul class="footer-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="index.html">About Us</a></li>
-          <li><a href="index.html">Shows</a></li>
+          <li><a href="main-website-live-synced.html#home">Home</a></li>
+          <li><a href="main-website-live-synced.html#about">About Us</a></li>
+          <li><a href="main-website-live-synced.html#shows">Shows</a></li>
           <li><a href="news.html">News</a></li>
-          <li><a href="index.html">Live Stream</a></li>
+          <li><a href="main-website-live-synced.html#live">Live Stream</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1036,31 +1175,28 @@
       return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    function newsRowHTML(id, item, isNew) {
+    function newsCardHTML(id, item, isNew, delay) {
       const title = item.title || 'Untitled update';
-      const body = item.body || '';
       const date = item.date ? formatNewsDate(item.date) : '';
-      const link = item.link || '';
       const hasImg = !!item.imageUrl;
       const imgHtml = hasImg
-        ? `<img class="news-row-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
-        : '';
-      const linkHtml = link
-        ? `<a class="news-row-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Read more
-             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-           </a>`
-        : '';
+        ? `<img class="news-card-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
+        : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>`;
+
       return `
-        <div class="news-row${hasImg ? '' : ' no-img'}" data-id="${id}">
-          ${imgHtml}
-          <div class="news-row-body">
-            <div class="news-row-top">
-              ${date ? `<span class="news-row-date">${escapeHtml(date)}</span>` : ''}
-              ${isNew ? `<span class="news-row-new">Just in</span>` : ''}
+        <div class="news-card" data-id="${id}" style="animation-delay:${delay}s">
+          <div class="news-card-imgwrap${hasImg ? '' : ' no-img'}">
+            ${isNew ? `<span class="news-card-new">Just in</span>` : ''}
+            ${imgHtml}
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-titlewrap">
+              <div class="news-card-title">${escapeHtml(title)}</div>
+              ${date ? `<div class="news-card-date">${escapeHtml(date)}</div>` : ''}
             </div>
-            <h2 class="news-row-title">${escapeHtml(title)}</h2>
-            ${body ? `<p class="news-row-excerpt">${escapeHtml(body)}</p>` : ''}
-            ${linkHtml}
+            <div class="news-card-arrow">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
           </div>
         </div>`;
     }
@@ -1069,10 +1205,13 @@
     const newsSkeleton = document.getElementById('newsSkeleton');
 
     let knownIds = null; // null = first snapshot not yet processed
+    let newsCache = {};  // id -> item, used to populate the detail modal on click
 
     onValue(ref(db, 'news'), (snap) => {
       newsSkeleton.style.display = 'none';
-      const entries = sortedEntries(snap.val());
+      const val = snap.val();
+      newsCache = val || {};
+      const entries = sortedEntries(val);
 
       if (entries.length === 0) {
         newsFeed.innerHTML = `
@@ -1089,15 +1228,14 @@
 
       newsFeed.innerHTML = entries.map(([id, item], i) => {
         const isNew = !isFirstLoad && !knownIds.has(id);
-        const row = newsRowHTML(id, item, isNew);
-        return row.replace('<div class="news-row', `<div style="animation-delay:${Math.min(i, 8) * 0.05}s" class="news-row`);
+        return newsCardHTML(id, item, isNew, Math.min(i, 8) * 0.05);
       }).join('');
 
-      // Briefly flash any genuinely-new row, then settle.
+      // Briefly flash any genuinely-new card, then settle.
       if (!isFirstLoad) {
         entries.forEach(([id]) => {
           if (!knownIds.has(id)) {
-            const el = newsFeed.querySelector(`.news-row[data-id="${id}"]`);
+            const el = newsFeed.querySelector(`.news-card[data-id="${id}"]`);
             if (el) {
               el.classList.add('flash');
               setTimeout(() => el.classList.remove('flash'), 2600);
@@ -1115,6 +1253,77 @@
           <h3>Couldn't load news right now</h3>
           <p>Please refresh the page in a moment.</p>
         </div>`;
+    });
+
+    // ── News detail — modal on desktop, bottom sheet on mobile ──
+    const newsModal = document.getElementById('newsModal');
+    const newsModalContent = document.getElementById('newsModalContent');
+    const newsModalImgSlot = document.getElementById('newsModalImgSlot');
+    const newsModalDate = document.getElementById('newsModalDate');
+    const newsModalTitle = document.getElementById('newsModalTitle');
+    const newsModalText = document.getElementById('newsModalText');
+    const newsModalLink = document.getElementById('newsModalLink');
+
+    function openNewsModal(id) {
+      const item = newsCache[id];
+      if (!item) return;
+
+      const title = item.title || 'Untitled update';
+      newsModalImgSlot.innerHTML = item.imageUrl
+        ? `<img class="news-modal-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
+        : `<div class="news-modal-imgwrap no-img"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></div>`;
+
+      newsModalDate.textContent = item.date ? formatNewsDate(item.date) : '';
+      newsModalDate.style.display = item.date ? '' : 'none';
+      newsModalTitle.textContent = title;
+      newsModalText.textContent = item.body || '';
+      newsModalText.style.display = item.body ? '' : 'none';
+
+      if (item.link) {
+        newsModalLink.href = item.link;
+        newsModalLink.style.display = 'inline-flex';
+      } else {
+        newsModalLink.style.display = 'none';
+      }
+
+      newsModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeNewsModal() {
+      newsModal.classList.remove('active');
+      document.body.style.overflow = '';
+      newsModalContent.style.transform = '';
+    }
+
+    newsFeed.addEventListener('click', (e) => {
+      const card = e.target.closest('.news-card');
+      if (card) openNewsModal(card.dataset.id);
+    });
+
+    newsModal.addEventListener('click', (e) => { if (e.target === newsModal) closeNewsModal(); });
+
+    // Drag-to-close on mobile, same pattern as the player bottom sheet
+    let newsStartY = 0, newsCurrentY = 0, newsDragging = false;
+    newsModalContent.addEventListener('touchstart', (e) => {
+      if (window.innerWidth <= 750 && newsModalContent.scrollTop <= 0) {
+        newsStartY = e.touches[0].clientY;
+        newsDragging = true;
+        newsModalContent.style.transition = 'none';
+      }
+    }, { passive: true });
+    newsModalContent.addEventListener('touchmove', (e) => {
+      if (!newsDragging) return;
+      newsCurrentY = e.touches[0].clientY;
+      const deltaY = newsCurrentY - newsStartY;
+      if (deltaY > 0) newsModalContent.style.transform = `translateY(${deltaY}px)`;
+    }, { passive: true });
+    newsModalContent.addEventListener('touchend', () => {
+      if (!newsDragging) return;
+      newsDragging = false;
+      newsModalContent.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      if (newsCurrentY - newsStartY > 140) closeNewsModal();
+      else newsModalContent.style.transform = 'translateY(0)';
     });
   </script>
 </body>
