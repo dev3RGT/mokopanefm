@@ -851,6 +851,107 @@
       border-radius: 5px;
     }
 
+    /* ── NEWS ──
+       Hidden entirely (display:none on the section) until at least one
+       item exists in Firebase — toggled by the script near the bottom
+       of this page. No layout space is reserved when empty. */
+    .news-section {
+      background: var(--dark2);
+      padding: 96px 0;
+      display: none;
+    }
+
+    .news-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 56px;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(245,168,0,0.1);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .news-card:hover {
+      border-color: rgba(245,168,0,0.25);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px rgba(245,168,0,0.08);
+    }
+
+    .news-card-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      background: var(--dark3);
+    }
+
+    .news-card-body {
+      padding: 22px 24px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .news-card-date {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .news-card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .news-card-excerpt {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      opacity: 0.65;
+      flex: 1;
+    }
+
+    .news-card-link {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+    .news-card-link:hover { text-decoration: underline; }
+
+    @media (max-width: 950px) {
+      .news-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 650px) {
+      .news-grid { grid-template-columns: 1fr; }
+    }
+
     /* ── LIVE STREAM CTA ── */
     .stream-cta {
       background: linear-gradient(135deg, var(--maroon-dk) 0%, var(--maroon) 50%, #A01C1C 100%);
@@ -1496,7 +1597,7 @@
         padding-right: 24px;
       }
       .section { padding-top: 64px; padding-bottom: 64px; }
-      .shows-section, .carousel-section { padding-top: 64px; padding-bottom: 64px; }
+      .shows-section, .carousel-section, .news-section { padding-top: 64px; padding-bottom: 64px; }
       .stream-cta { padding-top: 64px; padding-bottom: 64px; }
       .contact-strip { padding-top: 64px; padding-bottom: 64px; }
       footer { padding-top: 64px; }
@@ -1545,6 +1646,7 @@
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#shows">Shows</a></li>
+      <li id="newsNavItem" style="display:none;"><a href="#news">News</a></li>
       <li><a href="#live">Stream</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -1640,6 +1742,17 @@
     </div>
   </section>
 
+  <section class="news-section" id="news">
+    <div class="news-wrap">
+      <p class="section-label reveal">Updates</p>
+      <h2 class="section-title reveal">Latest <em>News</em></h2>
+      <div class="news-grid" id="newsGrid">
+        <!-- News cards render live from Firebase — see script near the end of this page.
+             This whole section stays display:none until news exists. -->
+      </div>
+    </div>
+  </section>
+
   <section class="stream-cta" id="live">
     <p class="section-label">Tune In</p>
     <h2 class="section-title reveal">Stream Us <em>Anywhere</em></h2>
@@ -1673,7 +1786,7 @@
   <footer>
     <div class="footer-grid">
       <div class="footer-brand"><img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" /><div class="freq-badge">100.0</div><p class="footer-tagline">The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24/7.</p></div>
-      <div class="footer-col"><h5>Navigate</h5><ul class="footer-links"><li><a href="#home">Home</a></li><li><a href="#about">About Us</a></li><li><a href="#shows">Shows</a></li><li><a href="#live">Live Stream</a></li></ul></div>
+      <div class="footer-col"><h5>Navigate</h5><ul class="footer-links"><li><a href="#home">Home</a></li><li><a href="#about">About Us</a></li><li><a href="#shows">Shows</a></li><li id="newsFooterItem" style="display:none;"><a href="#news">News</a></li><li><a href="#live">Live Stream</a></li></ul></div>
       <div class="footer-col"><h5>Connect</h5><ul class="footer-links"><li><a href="tel:0154911208">015 491 1208</a></li><li><a href="mailto:admin@mokopanefm.co.za">admin@mokopanefm.co.za</a></li></ul></div>
     </div>
     <div class="footer-bottom"><p class="footer-copy">&copy; 2026 Mokopane FM Community Radio Station. All rights reserved.</p></div>
@@ -2027,6 +2140,62 @@
       ).join('');
       if (typeof window.initCarouselUI === 'function') window.initCarouselUI();
     }, (err) => console.error('Carousel sync error:', err));
+
+    /* ── NEWS — rendered from /news ──
+       The entire News section (plus its nav + footer links) is hidden
+       until at least one item has been published in the admin
+       dashboard. Nothing is shown — no empty heading, no placeholder
+       cards — while /news has no entries. */
+    function newsCardHTML(item) {
+      const title = item.title || 'Untitled update';
+      const body = item.body || '';
+      const date = item.date ? formatNewsDate(item.date) : '';
+      const link = item.link || '';
+      const imgHtml = item.imageUrl
+        ? `<img class="news-card-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
+        : '';
+      const linkHtml = link
+        ? `<a class="news-card-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Read more
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+           </a>`
+        : '';
+      return `
+        <div class="news-card">
+          ${imgHtml}
+          <div class="news-card-body">
+            ${date ? `<span class="news-card-date">${escapeHtml(date)}</span>` : ''}
+            <h3 class="news-card-title">${escapeHtml(title)}</h3>
+            ${body ? `<p class="news-card-excerpt">${escapeHtml(body)}</p>` : ''}
+            ${linkHtml}
+          </div>
+        </div>`;
+    }
+
+    function formatNewsDate(isoDate) {
+      const d = new Date(isoDate + 'T00:00:00');
+      if (isNaN(d.getTime())) return isoDate;
+      return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    const newsSection = document.getElementById('news');
+    const newsGrid = document.getElementById('newsGrid');
+    const newsNavItem = document.getElementById('newsNavItem');
+    const newsFooterItem = document.getElementById('newsFooterItem');
+
+    onValue(ref(db, 'news'), (snap) => {
+      const entries = sortedEntries(snap.val());
+      if (entries.length === 0) {
+        newsGrid.innerHTML = '';
+        newsSection.style.display = 'none';
+        newsNavItem.style.display = 'none';
+        newsFooterItem.style.display = 'none';
+        return;
+      }
+      newsGrid.innerHTML = entries.map(([, item]) => newsCardHTML(item)).join('');
+      newsSection.style.display = '';
+      newsNavItem.style.display = '';
+      newsFooterItem.style.display = '';
+    }, (err) => console.error('News sync error:', err));
   </script>
 </body>
 </html>
